@@ -32,7 +32,7 @@ final class CentralViewModel: NSObject, ObservableObject {
         
         discoveredPeripherals.removeAll()
         
-        centralManager.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
+        centralManager.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
     }
     
     func stopScan() {
