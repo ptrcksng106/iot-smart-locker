@@ -1,20 +1,21 @@
 //
-//  ContentView.swift
+//  VerifyLockerView.swift
 //  IoTTesting
 //
-//  Created by Patrick Samuel Owen Saritua Sinaga on 31/03/26.
+//  Created by Patrick Samuel Owen Saritua Sinaga on 16/04/26.
 //
 
-import SwiftUI
 import CoreBluetooth
+import SwiftUI
 
-struct ContentView: View {
+struct VerifyLockerView: View {
     
     let mode: BLEMode = .central // iPhone
     // let mode: BLEMode = .peripheral // iPad
     
     @StateObject private var centralVM = CentralViewModel()
     @StateObject private var peripheralVM = PeripheralManager()
+    @StateObject private var viewModel = OrdersViewModel()
     
     @State private var textToSend = ""
     
@@ -29,6 +30,9 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("BLE Testing")
+            .task {
+                viewModel.fetchOrders()
+            }
         }
     }
     
@@ -73,3 +77,8 @@ struct ContentView: View {
         }
     }
 }
+
+#Preview {
+    VerifyLockerView()
+}
+
