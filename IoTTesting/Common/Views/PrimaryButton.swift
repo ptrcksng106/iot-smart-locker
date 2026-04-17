@@ -12,7 +12,7 @@ struct PrimaryButton: View {
     var onTapped:() -> Void?
     
     var body: some View {
-        Button("Get Lockers") {
+        Button(title) {
             onTapped()
         }
         .foregroundStyle(.white)

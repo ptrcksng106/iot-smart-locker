@@ -50,7 +50,7 @@ struct LockerView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             }
-            .navigationTitle("Lockers")
+            .navigationTitle("Smart Locker")
             .padding()
         }
     }

@@ -13,6 +13,7 @@ final class CentralViewModel: NSObject, ObservableObject {
     @Published var isBluetoothOn = false
     @Published var discoveredPeripherals: [CBPeripheral] = []
     @Published var connectedPeripheral: CBPeripheral?
+    @Published var isLoading = false
     
     private var centralManager: CBCentralManager!
     private var targetCharacteristic: CBCharacteristic?
@@ -42,6 +43,7 @@ final class CentralViewModel: NSObject, ObservableObject {
     func connect(_ peripheral: CBPeripheral) {
         print("--- connecting to:", peripheral.name ?? "")
         centralManager.connect(peripheral, options: nil)
+        isLoading = false
     }
     
     func sendText(_ text: String) {
@@ -77,6 +79,7 @@ extension CentralViewModel: CBCentralManagerDelegate {
         
         DispatchQueue.main.async {
             if !self.discoveredPeripherals.contains(where: { $0.identifier == peripheral.identifier }) {
+                guard let name = peripheral.name, !name.isEmpty else { return }
                 self.discoveredPeripherals.append(peripheral)
             }
         }

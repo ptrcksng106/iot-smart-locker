@@ -10,8 +10,8 @@ import CoreBluetooth
 
 struct ContentView: View {
     
-    let mode: BLEMode = .central // iPhone
-    // let mode: BLEMode = .peripheral // iPad
+//    let mode: BLEMode = .central // iPhone
+     let mode: BLEMode = .peripheral // iPad
     
     @StateObject private var centralVM = CentralViewModel()
     @StateObject private var peripheralVM = PeripheralManager()

@@ -12,7 +12,8 @@ struct IoTTestingApp: App {
     var body: some Scene {
         WindowGroup {
 //            ContentView()
-            TabBarView()
+//            TabBarView()
+            LockerView()
         }
     }
 }
