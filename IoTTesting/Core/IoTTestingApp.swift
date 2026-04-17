@@ -11,7 +11,9 @@ import SwiftUI
 struct IoTTestingApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+//            ContentView()
+//            TabBarView()
+            LockerView()
         }
     }
 }
