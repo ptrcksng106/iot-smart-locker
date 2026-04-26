@@ -17,9 +17,9 @@ final class CentralViewModel: NSObject, ObservableObject {
     
     private var centralManager: CBCentralManager!
     private var targetCharacteristic: CBCharacteristic?
+    private var targetCharUuid: CBUUID?
     
-    private let serviceUUID = CBUUID(string: "1234")
-    private let charUUID = CBUUID(string: "5678")
+    private var order: Order? = nil
     
     override init() {
         super.init()
@@ -40,16 +40,29 @@ final class CentralViewModel: NSObject, ObservableObject {
         centralManager.stopScan()
     }
     
-    func connect(_ peripheral: CBPeripheral) {
+    func connect(_ peripheral: CBPeripheral, order: Order? = nil) {
         print("--- connecting to:", peripheral.name ?? "")
-        centralManager.connect(peripheral, options: nil)
-        isLoading = false
+        
+        guard order != nil else {
+            return
+        }
+        
+        guard let charId = order?.lockerId else {
+            return
+        }
+        
+        self.targetCharUuid = CBUUID(string: charId)
+        self.centralManager.connect(peripheral, options: nil)
+        self.isLoading = false
+        self.order = order
     }
     
     func sendText(_ text: String) {
         guard let characteristic = targetCharacteristic,
               let data = text.data(using: .utf8),
               let peripheral = connectedPeripheral else { return }
+        
+        print("Send data: \(data)")
         
         peripheral.writeValue(data, for: characteristic, type: .withResponse)
     }
@@ -74,8 +87,6 @@ extension CentralViewModel: CBCentralManagerDelegate {
                         didDiscover peripheral: CBPeripheral,
                         advertisementData: [String : Any],
                         rssi RSSI: NSNumber) {
-        
-        print("--- found:", peripheral.name ?? "")
         
         DispatchQueue.main.async {
             if !self.discoveredPeripherals.contains(where: { $0.identifier == peripheral.identifier }) {
@@ -119,7 +130,7 @@ extension CentralViewModel: CBPeripheralDelegate {
         guard let characteristics = service.characteristics else { return }
         
         for characteristic in characteristics {
-            if characteristic.uuid == charUUID {
+            if characteristic.uuid == targetCharUuid {
                 targetCharacteristic = characteristic
             }
         }

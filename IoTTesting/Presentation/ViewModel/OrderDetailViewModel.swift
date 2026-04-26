@@ -53,25 +53,26 @@ final class OrderDetailViewModel: ObservableObject {
     /// - Returns: base64url-encoded encrypted payload string
     func generateEncryptedPayload(unlockCode: String, publicKeyBase64: String) throws -> String {
         // 1. Decode base64 PEM → DER (strip PEM headers)
-//        let pem = String(data: Data(base64Encoded: publicKeyBase64, options: .ignoreUnknownCharacters)!, encoding: .utf8)!
+        let pem = String(data: Data(base64Encoded: publicKeyBase64, options: .ignoreUnknownCharacters)!, encoding: .utf8)!
         
-        let hardcodedPEM = """
-        -----BEGIN PUBLIC KEY-----
-        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlIMPHwD3lyGgUVUrBkx/
-        Bo8SJ0MuN5fZk/s/L86W43iUmOuAK8L1A9h+28p1SXKNiSo6dD/GMuZLMaJ97JyL
-        9KRkSEOagh0A7SCISAzPyOdpdUysrPK+lVbrE6lX79J58SFAGekEcRlokgspjgdg
-        BU3b57ylT8B3Uh5C02rB2Vyh1x0e3IhEtQgbYNYx7UC040t2b+VDdddNqVvI/Ded
-        h3qw+9pn0s8OrPnRBgZY2etq5QqS1cn7pPijrdlmR65fJmY1T6Q5HfTiX+e2T9zE
-        LUfAjGu8gV8kk+xKJ1fJcjY9kzkcode3EDfoMVImPvUuVd5BfiAPyfP96TZDz1v6
-        hQIDAQAB
-        -----END PUBLIC KEY-----
-        """
+//        let hardcodedPEM = """
+//        -----BEGIN PUBLIC KEY-----
+//        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlIMPHwD3lyGgUVUrBkx/
+//        Bo8SJ0MuN5fZk/s/L86W43iUmOuAK8L1A9h+28p1SXKNiSo6dD/GMuZLMaJ97JyL
+//        9KRkSEOagh0A7SCISAzPyOdpdUysrPK+lVbrE6lX79J58SFAGekEcRlokgspjgdg
+//        BU3b57ylT8B3Uh5C02rB2Vyh1x0e3IhEtQgbYNYx7UC040t2b+VDdddNqVvI/Ded
+//        h3qw+9pn0s8OrPnRBgZY2etq5QqS1cn7pPijrdlmR65fJmY1T6Q5HfTiX+e2T9zE
+//        LUfAjGu8gV8kk+xKJ1fJcjY9kzkcode3EDfoMVImPvUuVd5BfiAPyfP96TZDz1v6
+//        hQIDAQAB
+//        -----END PUBLIC KEY-----
+//        """
         
-        let derBase64 = hardcodedPEM
+        let derBase64 = pem
             .replacingOccurrences(of: "-----BEGIN PUBLIC KEY-----", with: "")
             .replacingOccurrences(of: "-----END PUBLIC KEY-----", with: "")
             .replacingOccurrences(of: "\n", with: "")
             .trimmingCharacters(in: .whitespaces)
+        
         guard let derData = Data(base64Encoded: derBase64) else {
             throw LockerPayloadError.invalidPublicKey
         }

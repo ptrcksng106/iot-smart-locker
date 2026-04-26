@@ -27,7 +27,7 @@ final class OrdersViewModel: ObservableObject {
                 case .failure(let error):
                     self?.isLoading = false
                     //TODO: handle error here
-                    print("--- error: \(error)")
+                    print(">> error: \(error)")
                 case .finished:
                     break
                 }

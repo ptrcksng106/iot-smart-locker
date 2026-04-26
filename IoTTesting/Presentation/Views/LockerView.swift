@@ -21,7 +21,7 @@ struct LockerView: View {
                     
                     ForEach(viewModel.orders, id: \.self) { order in
                         NavigationLink {
-                            OrderDetailView(orderId: order.lockerServerUuid ?? "")
+                            OrderDetailView(orderId: order.id)
                         } label: {
                             VStack(alignment: .leading, spacing: 4) {
                                 HStack {
@@ -30,7 +30,7 @@ struct LockerView: View {
                                             .foregroundStyle(.black)
                                             .font(.headline)
                                         
-                                        Text(order.lockerServerUuid ?? "")
+                                        Text(order.lockerDetail ?? "")
                                             .foregroundStyle(.black)
                                             .font(.subheadline)
                                     }

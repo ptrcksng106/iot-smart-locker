@@ -19,55 +19,40 @@ struct Order: Codable, Identifiable, Hashable {
     let lockerId: String?
     let lockerServerId: String?
     let lockerNumber: Int
-    let status: OrderStatus?
-    let lockerPublicKey: String
     let lockerDetail: String?
-    let lockerServerUuid: String?
+    let lockerPublicKey: String
+    let status: OrderStatus?
     let recipientName: String
-    let recipientPhone: String?
-    let recipientEmail: String?
     let courierName: String?
-    let courierPhone: String?
     let packageDescription: String?
     let trackingNumber: String?
-    
+    let dropUnlockCode: String?
+    let pickupUnlockCode: String?
+
     // Timestamps
-    let courierConfirmedAt: String?
-    let piDropConfirmedAt: String?
-    let receiverConfirmedAt: String?
-    let piPickupConfirmedAt: String?
     let createdAt: String?
-    let updatedAt: String?
+    let expiresAt: String?
     let deliveredAt: String?
     let pickedUpAt: String?
-    let expiresAt: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case id
         case lockerId = "locker_id"
         case lockerServerId = "locker_server_id"
         case lockerNumber = "locker_number"
-        case status
-        case lockerPublicKey = "locker_public_key"
         case lockerDetail = "locker_detail"
-        case lockerServerUuid = "locker_server_uuid"
+        case lockerPublicKey = "locker_public_key"
+        case status
         case recipientName = "recipient_name"
-        case recipientPhone = "recipient_phone"
-        case recipientEmail = "recipient_email"
         case courierName = "courier_name"
-        case courierPhone = "courier_phone"
         case packageDescription = "package_description"
         case trackingNumber = "tracking_number"
-        
-        case courierConfirmedAt = "courier_confirmed_at"
-        case piDropConfirmedAt = "pi_drop_confirmed_at"
-        case receiverConfirmedAt = "receiver_confirmed_at"
-        case piPickupConfirmedAt = "pi_pickup_confirmed_at"
+        case dropUnlockCode = "drop_unlock_code"
+        case pickupUnlockCode = "pickup_unlock_code"
         case createdAt = "created_at"
-        case updatedAt = "updated_at"
+        case expiresAt = "expires_at"
         case deliveredAt = "delivered_at"
         case pickedUpAt = "picked_up_at"
-        case expiresAt = "expires_at"
     }
 }
 

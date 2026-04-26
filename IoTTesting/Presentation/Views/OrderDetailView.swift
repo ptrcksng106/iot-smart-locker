@@ -39,7 +39,7 @@ struct OrderDetailView: View {
         VStack {
             List(centralVM.discoveredPeripherals, id: \.identifier) { peripheral in
                 Button {
-                    centralVM.connect(peripheral)
+                    centralVM.connect(peripheral, order: viewModel.order)
                 } label: {
                     Text(peripheral.name ?? "")
                 }
@@ -47,18 +47,20 @@ struct OrderDetailView: View {
             
             if centralVM.connectedPeripheral != nil {
                 PrimaryButton(title: "Send code") {
-                    let hardcodedPEM = """
-                    -----BEGIN PUBLIC KEY-----
-                    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlIMPHwD3lyGgUVUrBkx/
-                    Bo8SJ0MuN5fZk/s/L86W43iUmOuAK8L1A9h+28p1SXKNiSo6dD/GMuZLMaJ97JyL
-                    9KRkSEOagh0A7SCISAzPyOdpdUysrPK+lVbrE6lX79J58SFAGekEcRlokgspjgdg
-                    BU3b57ylT8B3Uh5C02rB2Vyh1x0e3IhEtQgbYNYx7UC040t2b+VDdddNqVvI/Ded
-                    h3qw+9pn0s8OrPnRBgZY2etq5QqS1cn7pPijrdlmR65fJmY1T6Q5HfTiX+e2T9zE
-                    LUfAjGu8gV8kk+xKJ1fJcjY9kzkcode3EDfoMVImPvUuVd5BfiAPyfP96TZDz1v6
-                    hQIDAQAB
-                    -----END PUBLIC KEY-----
-                    """
-                    guard let codeToSent = try? viewModel.generateEncryptedPayload(unlockCode: "123456", publicKeyBase64: hardcodedPEM) else { return }
+                    guard let order = viewModel.order else {
+                        print("Order is empty")
+                        return
+                    }
+                    
+                    let payload = try? viewModel.generateEncryptedPayload(
+                        unlockCode: order.dropUnlockCode ?? "",
+                        publicKeyBase64: order.lockerPublicKey
+                    )
+                    
+                    guard let codeToSent = payload else {
+                        print("Code is empty")
+                        return
+                    }
                     
                     centralVM.sendText(codeToSent)
                 }
