@@ -1,14 +1,12 @@
 //
-//  LockerView.swift
+//  ReceiverOrdersView.swift
 //  IoTTesting
-//
-//  Created by Patrick Samuel Owen Saritua Sinaga on 16/04/26.
 //
 
 import SwiftUI
 
-struct LockerView: View {
-    @StateObject private var viewModel = OrdersViewModel()
+struct ReceiverOrdersView: View {
+    @StateObject private var viewModel = ReceiverOrdersViewModel()
 
     var body: some View {
         NavigationStack {
@@ -18,13 +16,13 @@ struct LockerView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let errorMessage = viewModel.errorMessage {
                     errorView(message: errorMessage)
-                } else if viewModel.orders.isEmpty {
+                } else if viewModel.readyForPickupOrders.isEmpty && viewModel.deliveredOrders.isEmpty {
                     emptyView
                 } else {
                     orderList
                 }
             }
-            .navigationTitle("Smart Locker")
+            .navigationTitle("Pick Up Package")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -41,26 +39,40 @@ struct LockerView: View {
     }
 
     private var orderList: some View {
-        ScrollView {
-            VStack(spacing: 12) {
-                ForEach(viewModel.orders, id: \.self) { order in
-                    NavigationLink {
-                        OrderDetailView(orderId: order.id)
-                    } label: {
-                        OrderCardView(order: order)
+        List {
+            if !viewModel.readyForPickupOrders.isEmpty {
+                Section("Ready for Pickup") {
+                    ForEach(viewModel.readyForPickupOrders) { order in
+                        NavigationLink {
+                            ReceiverOrderDetailView(orderId: order.id)
+                        } label: {
+                            ReceiverOrderRowView(order: order)
+                        }
                     }
                 }
             }
-            .padding()
+
+            if !viewModel.deliveredOrders.isEmpty {
+                Section("History") {
+                    ForEach(viewModel.deliveredOrders) { order in
+                        NavigationLink {
+                            ReceiverOrderDetailView(orderId: order.id)
+                        } label: {
+                            ReceiverOrderRowView(order: order)
+                        }
+                    }
+                }
+            }
         }
+        .listStyle(.insetGrouped)
     }
 
     private var emptyView: some View {
         VStack(spacing: 16) {
-            Image(systemName: "shippingbox")
+            Image(systemName: "archivebox")
                 .font(.system(size: 56))
                 .foregroundStyle(.secondary)
-            Text("No delivery orders yet")
+            Text("No packages waiting for pickup")
                 .font(.headline)
                 .foregroundStyle(.secondary)
             PrimaryButton(title: "Refresh") {
@@ -90,61 +102,35 @@ struct LockerView: View {
     }
 }
 
-// MARK: - Order Card
+// MARK: - Row
 
-private struct OrderCardView: View {
+private struct ReceiverOrderRowView: View {
     let order: Order
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 6) {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Locker \(String(order.lockerNumber))")
-                        .foregroundStyle(.black)
-                        .font(.headline)
-
-                    Text(order.lockerDetail ?? "")
-                        .foregroundStyle(.black)
-                        .font(.subheadline)
-
-                    if let lockerServer = order.lockerServer,
-                       let name = lockerServer.name, !name.isEmpty,
-                       let location = lockerServer.location, !location.isEmpty {
-                        HStack(spacing: 4) {
-                            Image(systemName: "location.fill")
-                                .font(.caption2)
-                                .foregroundStyle(.blue)
-                            Text("\(name) - \(location)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding(.top, 2)
-                    }
-
-                    // Recipient name
-                    HStack(spacing: 4) {
-                        Image(systemName: "person.fill")
-                            .foregroundStyle(.secondary)
-                            .font(.caption)
-                        Text(order.recipientName)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(.top, 2)
-                }
-
+                Label("Locker \(order.lockerNumber)", systemImage: "lock.rectangle")
+                    .font(.headline)
                 Spacer()
-
                 statusBadge
             }
-            .padding()
-            .background(Color(.systemBackground))
-            .cornerRadius(8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color(.systemGray4), lineWidth: 1)
-            )
+            if let description = order.packageDescription {
+                Text(description)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+            HStack(spacing: 4) {
+                Image(systemName: "person.fill")
+                    .foregroundStyle(.secondary)
+                    .font(.caption)
+                Text(order.recipientName)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
+        .padding(.vertical, 4)
     }
 
     private var statusBadge: some View {
@@ -175,7 +161,7 @@ private struct OrderCardView: View {
     }
 }
 
-// MARK: - Status display helper
+// MARK: - OrderStatus display helper
 
 private extension OrderStatus {
     var displayName: String {
@@ -195,5 +181,5 @@ private extension OrderStatus {
 }
 
 #Preview {
-    LockerView()
+    ReceiverOrdersView()
 }
