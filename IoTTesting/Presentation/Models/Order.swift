@@ -14,13 +14,18 @@ struct OrderResponse: Codable, Hashable {
     let offset: Int?
 }
 
+struct LockerServer: Codable, Hashable {
+    let name: String?
+    let location: String?
+}
+
 struct Order: Codable, Identifiable, Hashable {
     let id: String
     let lockerId: String?
     let lockerServerId: String?
     let lockerNumber: Int
     let lockerDetail: String?
-    let lockerPublicKey: String
+    let lockerPublicKey: String?
     let status: OrderStatus?
     let recipientName: String
     let courierName: String?
@@ -28,6 +33,7 @@ struct Order: Codable, Identifiable, Hashable {
     let trackingNumber: String?
     let dropUnlockCode: String?
     let pickupUnlockCode: String?
+    let lockerServer: LockerServer?
 
     // Timestamps
     let createdAt: String?
@@ -49,6 +55,7 @@ struct Order: Codable, Identifiable, Hashable {
         case trackingNumber = "tracking_number"
         case dropUnlockCode = "drop_unlock_code"
         case pickupUnlockCode = "pickup_unlock_code"
+        case lockerServer = "locker_server"
         case createdAt = "created_at"
         case expiresAt = "expires_at"
         case deliveredAt = "delivered_at"
@@ -65,7 +72,7 @@ enum LockerState: String, Codable, Hashable {
     case maintenance
 }
 
-enum OrderStatus: String, Codable, Hashable {
+enum OrderStatus: String, Codable, Hashable, CaseIterable {
     case created
     case waitingForDrop = "waiting_for_drop"
     case delivering
@@ -75,4 +82,11 @@ enum OrderStatus: String, Codable, Hashable {
     case pickedUp = "picked_up"
     case expired
     case cancelled
+    case unknown
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = OrderStatus(rawValue: rawValue) ?? .unknown
+    }
 }

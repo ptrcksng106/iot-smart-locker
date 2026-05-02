@@ -26,8 +26,8 @@ final class OrdersViewModel: ObservableObject {
                 switch completion {
                 case .failure(let error):
                     self?.isLoading = false
-                    //TODO: handle error here
-                    print(">> error: \(error)")
+                    self?.errorMessage = error.localizedDescription
+                    print("OrdersViewModel error: \(error)")
                 case .finished:
                     break
                 }
