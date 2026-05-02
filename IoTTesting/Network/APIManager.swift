@@ -69,8 +69,8 @@ final class APIManager {
     static let shared = APIManager()
     private init() {}
 
-//    private let baseURL = URL(string: "https://rqcjrdnoalyhnzeagrxo.functions.supabase.co")!
-    private let baseURL = URL(string: "http://192.168.18.230:54321/functions/v1/")!
+    private let baseURL = URL(string: "https://rqcjrdnoalyhnzeagrxo.functions.supabase.co")!
+//    private let baseURL = URL(string: "http://192.168.18.242:54321/functions/v1/")!
 
     private let bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxY2pyZG5vYWx5aG56ZWFncnhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NzU4NTUsImV4cCI6MjA5MTA1MTg1NX0.nQGi0_FDw8-TROqZFBwX90rqcxzwXd3SkImdXwwjS_Q"
 

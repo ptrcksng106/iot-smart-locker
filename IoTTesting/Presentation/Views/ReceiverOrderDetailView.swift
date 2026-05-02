@@ -42,6 +42,12 @@ struct ReceiverOrderDetailView: View {
         .task {
             viewModel.fetchOrderDetail(id: orderId)
         }
+        .onChange(of: viewModel.order) { _, order in
+            guard let order else { return }
+
+            // Start automatic BLE scan with order context
+            centralVM.startScan(with: order)
+        }
     }
 
     // MARK: - Order info

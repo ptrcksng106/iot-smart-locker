@@ -66,6 +66,9 @@ struct OrderDetailView: View {
         .onChange(of: viewModel.order) { _, order in
             guard let order else { return }
             courierStep = CourierFlowStep(for: order.status)
+
+            // Start automatic BLE scan with order context
+            centralVM.startScan(with: order)
         }
     }
 
